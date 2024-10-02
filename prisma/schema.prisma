@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Movie {
+  id            Int      @id @default(autoincrement())
+  name          String
+  releaseDate   DateTime
+  averageRating Float?
+  reviews       Review[] // One movie has many reviews
+}
+
+model Review {
+  id       Int     @id @default(autoincrement())
+  reviewer String? // Reviewer name can be optional
+  rating   Float // Rating out of 10
+  comment  String // Review comment
+  movie    Movie   @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId  Int // Foreign key to reference Movie
+}
